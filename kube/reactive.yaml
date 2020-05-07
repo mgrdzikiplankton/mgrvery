@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reactive
+  template:
+    metadata:
+      labels:
+        app: reactive
+    spec:
+      containers:
+        - name: app
+          image: gcr.io/mgrpawel/reactive:v1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: db.host
+              value: postgres
+          imagePullPolicy: Always
+          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reactive
+spec:
+  selector:
+    app: reactive
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer

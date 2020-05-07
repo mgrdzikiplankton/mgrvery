@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: classic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: classic
+  template:
+    metadata:
+      labels:
+        app: classic
+    spec:
+      containers:
+        - name: app
+          image: gcr.io/mgrpawel/classical:v1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: spring.datasource.url
+              value: jdbc:postgresql://postgres:5432/postgres
+          imagePullPolicy: Always
+          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: classic
+spec:
+  selector:
+    app: classic
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer
